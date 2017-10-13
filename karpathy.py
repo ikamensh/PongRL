@@ -2,6 +2,7 @@
 import numpy as np
 import pickle
 import gym
+from datetime import datetime
 
 # hyperparameters
 H = 200  # number of hidden layer neurons
@@ -11,6 +12,8 @@ gamma = 0.99  # discount factor for reward
 decay_rate = 0.99  # decay factor for RMSProp leaky sum of grad^2
 resume = True  # resume from previous checkpoint?
 render = False
+
+
 
 # model initialization
 D = 80 * 80  # input dimensionality: 80x80 grid
@@ -130,6 +133,11 @@ while True:
         # boring book-keeping
         running_reward = reward_sum if running_reward is None else running_reward * 0.99 + reward_sum * 0.01
         print('resetting env. episode reward total was %f. running mean: %f' % (reward_sum, running_reward))
+
+        if(episode_number%100==0):
+            with open('learnlog_karpathy.log', 'a+') as f:
+                f.write('| %d | %f | %f | %s' % (episode_number, reward_sum, running_reward, str(datetime.now())))
+
 
         if episode_number % 100 == 0: pickle.dump(model, open('save.p', 'wb'))
         reward_sum = 0
