@@ -9,7 +9,7 @@ from keras.losses import mean_squared_logarithmic_error
 from datetime import datetime
 
 # hyperparameters
-batch_size = 10  # every how many episodes to do a param update?
+batch_size = 3  # every how many episodes to do a param update?
 resume = False  # resume from previous checkpoint?
 render = False
 
@@ -39,7 +39,7 @@ def prepro(I):
     I[I == 144] = 0  # erase background (background type 1)
     I[I == 109] = 0  # erase background (background type 2)
     I[I != 0] = 1  # everything else (paddles, ball) just set to 1
-    return I.astype(np.float).reshape(80,80,1)
+    return I.astype(np.float).reshape(1,80,80,1)
 
 observation = env.reset()
 prev_x = None  # used in computing the difference frame
@@ -60,7 +60,7 @@ while True:
     x_train_episode.append(x)
 
     # forward the policy network and sample an action from the returned probability
-    up_prob = model.predict_proba(x.reshape(1,80,80,1), verbose=0)
+    up_prob = model.predict_proba(x, verbose=0)
     action = 2 if np.random.uniform() < up_prob else 3  # roll the dice!
     y = 1 if action == 2 else 0  # a "fake label"
     y_train_episode.append(y)
@@ -72,11 +72,14 @@ while True:
 
     if done:  # an episode finished
         episode_number += 1
-        x_train_episode = np.array(x_train_episode)
+        x_train_episode = np.array(x_train_episode).reshape(-1,D,D,1)
         y_train_episode *=  np.array(y_train_episode)*reward_sum
 
-        x_train.append(x_train_episode)
-        y_train.append(y_train_episode)
+        print("x_train_episode has shape of " + str(x_train_episode.shape))
+        print("y_train_episode has shape of " + str(y_train_episode.shape))
+
+        x_train = x_train_episode if x_train is None else np.concatenate((x_train, x_train_episode),axis=0)
+        y_train = y_train_episode if y_train is None else np.concatenate((y_train, y_train_episode),axis=0)
 
         # perform rmsprop parameter update every batch_size episodes
         if episode_number % batch_size == 0:

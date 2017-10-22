@@ -37,19 +37,25 @@ def prepro(I):
     I[I == 144] = 0  # erase background (background type 1)
     I[I == 109] = 0  # erase background (background type 2)
     I[I != 0] = 1  # everything else (paddles, ball) just set to 1
-    return I.astype(np.float).reshape(80,80,1)
+    return I.astype(np.float).reshape(1,80,80,1)
 
 A=np.ones((210,160,3))
 B=prepro(A)
-C=[]
-for _ in range(10):
-    A=np.ones((210,160,3))
-    B=prepro(A)
-    C.append(B)
 
-C *= np.array(C)*1.01
 
-print(C)
-print(model.predict_proba(C))
+D = None
 
-model.summary()
+for _ in range(5):
+    C = []
+    for _ in range(10):
+        A=np.ones((210,160,3))
+        B=prepro(A)
+        C.append(B)
+    C *= np.array(C) * 1.01
+    C = C.reshape(-1 ,80, 80, 1)
+    D = C if D is None else np.concatenate((D,C),axis=0)
+
+
+
+print(D.shape)
+print(model.predict_proba(D))
