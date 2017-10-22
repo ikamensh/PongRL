@@ -5,7 +5,7 @@ import gym
 from keras.models import Sequential
 from keras.layers import Dense, Convolution2D, Flatten, MaxPool2D
 from keras.optimizers import RMSprop
-from keras.losses import mean_squared_logarithmic_error
+from keras.losses import binary_crossentropy
 from datetime import datetime
 
 # hyperparameters
@@ -29,7 +29,7 @@ else:
     model.add(MaxPool2D())
     model.add(Flatten())
     model.add(Dense(1, activation='sigmoid'))
-    model.compile(RMSprop(), mean_squared_logarithmic_error)
+    model.compile(RMSprop(), binary_crossentropy)
 
 
 def prepro(I):
@@ -73,10 +73,11 @@ while True:
         print(len(x_train_episode))
         episode_number += 1
         x_train_episode = np.array(x_train_episode).reshape(-1,D,D,1)
-        y_train_episode *=  np.array(y_train_episode)*-reward_sum
+        y_train_episode *=  np.ones(shape=(len(y_train_episode),1)) if reward_sum >0 else np.zeros(shape=(len(y_train_episode),1))
 
         print("x_train_episode has shape of " + str(x_train_episode.shape))
         print("y_train_episode has shape of " + str(y_train_episode.shape))
+        print(y_train_episode)
 
         x_train = x_train_episode if x_train is None else np.concatenate((x_train, x_train_episode),axis=0)
         y_train = y_train_episode if y_train is None else np.concatenate((y_train, y_train_episode),axis=0)
