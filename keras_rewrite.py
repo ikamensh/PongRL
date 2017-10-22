@@ -4,7 +4,7 @@ import pickle
 import gym
 from keras.models import Sequential
 from keras.layers import Dense, Convolution2D, Flatten, MaxPool2D
-from keras.optimizers import RMSprop
+from keras.optimizers import adam
 from keras.losses import binary_crossentropy
 from datetime import datetime
 
@@ -29,7 +29,7 @@ else:
     model.add(MaxPool2D())
     model.add(Flatten())
     model.add(Dense(1, activation='sigmoid'))
-    model.compile(RMSprop(), binary_crossentropy)
+    model.compile(adam(), binary_crossentropy)
 
 
 def prepro(I):
@@ -80,7 +80,7 @@ while True:
         # if actions are useful, we train to take same action, so the history is the train_y
         # otherwise we swap 1 and 0 in order to take opposite action
         if not actions_are_useful:
-            y_train_episode-=1 # 1 -> 0 ; 0 -> -1
+            y_train_episode -= 1 # 1 -> 0 ; 0 -> -1
             y_train_episode[y_train_episode<0]=1 # 0 -> 0 ; -1 -> 1
 
         print("x_train_episode has shape of " + str(x_train_episode.shape))
