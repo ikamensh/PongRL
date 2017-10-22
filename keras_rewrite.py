@@ -43,7 +43,7 @@ def prepro(I):
 
 observation = env.reset()
 prev_x = None  # used in computing the difference frame
-x_train, y_train= [], []
+x_train, y_train= None, None
 
 running_reward = None
 reward_sum = 0
@@ -85,8 +85,8 @@ while True:
         if episode_number % batch_size == 0:
             model.fit(np.array(x_train),np.array(y_train),epochs=5, verbose=2)
         if episode_number % batch_size*4 == 0:
-            x_train.clear()
-            y_train.clear()
+            x_train = None
+            y_train = None
 
         # boring book-keeping
         running_reward = reward_sum if running_reward is None else running_reward * 0.99 + reward_sum * 0.01
