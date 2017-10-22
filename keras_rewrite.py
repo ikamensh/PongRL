@@ -52,7 +52,6 @@ x_train_episode, y_train_episode = [], []
 while True:
     if render: env.render()
 
-
     # preprocess the observation, set input to network to be difference image
     cur_x = prepro(observation)
     x = cur_x - prev_x if prev_x is not None else np.zeros(shape=(1,D,D,1))
@@ -74,7 +73,7 @@ while True:
         print(len(x_train_episode))
         episode_number += 1
         x_train_episode = np.array(x_train_episode).reshape(-1,D,D,1)
-        y_train_episode *=  np.array(y_train_episode)*reward_sum
+        y_train_episode *=  np.array(y_train_episode)*-reward_sum
 
         print("x_train_episode has shape of " + str(x_train_episode.shape))
         print("y_train_episode has shape of " + str(y_train_episode.shape))
@@ -86,7 +85,7 @@ while True:
         # perform rmsprop parameter update every batch_size episodes
         if episode_number % batch_size == 0:
             model.fit(np.array(x_train),np.array(y_train),epochs=5, verbose=2)
-        
+
 
         # boring book-keeping
         running_reward = reward_sum if running_reward is None else running_reward * 0.99 + reward_sum * 0.01
