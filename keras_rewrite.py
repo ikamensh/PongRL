@@ -39,7 +39,7 @@ def prepro(I):
     I[I == 144] = 0  # erase background (background type 1)
     I[I == 109] = 0  # erase background (background type 2)
     I[I != 0] = 1  # everything else (paddles, ball) just set to 1
-    return I.astype(np.float).reshape(80,80,1)
+    return I.astype(np.float).reshape(1,80,80,1)
 
 observation = env.reset()
 prev_x = None  # used in computing the difference frame
@@ -58,7 +58,7 @@ while True:
     prev_x = cur_x
 
     # forward the policy network and sample an action from the returned probability
-    up_prob = model.predict_proba(x, verbose=0)
+    up_prob = model.predict_proba(x.reshape(shape=(1,80,80,1)), verbose=0)
     action = 2 if np.random.uniform() < up_prob else 3  # roll the dice!
     y = 1 if action == 2 else 0  # a "fake label"
 
