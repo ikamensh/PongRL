@@ -39,7 +39,7 @@ def prepro(I):
     I[I == 144] = 0  # erase background (background type 1)
     I[I == 109] = 0  # erase background (background type 2)
     I[I != 0] = 1  # everything else (paddles, ball) just set to 1
-    return I.astype(np.float).reshape(1,80,80,1)
+    return I.astype(np.float).reshape(80,80,1)
 
 observation = env.reset()
 prev_x = None  # used in computing the difference frame
@@ -58,7 +58,7 @@ while True:
     prev_x = cur_x
 
     # forward the policy network and sample an action from the returned probability
-    up_prob = model.predict_proba(x)
+    up_prob = model.predict_proba(x, verbose=0)
     action = 2 if np.random.uniform() < up_prob else 3  # roll the dice!
     y = 1 if action == 2 else 0  # a "fake label"
 
@@ -72,14 +72,15 @@ while True:
 
     if done:  # an episode finished
         episode_number += 1
-        y_train_episode *= reward_sum
+        x_train_episode = np.array(x_train_episode)
+        y_train_episode *=  np.array(y_train_episode)*reward_sum
 
-        x_train.extend(x_train_episode)
-        y_train.extend(y_train_episode)
+        x_train.append(x_train_episode)
+        y_train.append(y_train_episode)
 
         # perform rmsprop parameter update every batch_size episodes
         if episode_number % batch_size == 0:
-            model.fit(x_train,y_train,epochs=5)
+            model.fit(np.array(x_train),np.array(y_train),epochs=5, verbose=2)
         if episode_number % batch_size*4 == 0:
             x_train.clear()
             y_train.clear()
