@@ -10,7 +10,7 @@ from datetime import datetime
 
 # hyperparameters
 batch_size = 10  # every how many episodes to do a param update?
-resume = True  # resume from previous checkpoint?
+resume = False  # resume from previous checkpoint?
 render = False
 
 
