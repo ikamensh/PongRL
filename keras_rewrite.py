@@ -48,10 +48,10 @@ x_train, y_train= None, None
 running_reward = None
 reward_sum = 0
 episode_number = 0
-
+x_train_episode, y_train_episode = [], []
 while True:
     if render: env.render()
-    x_train_episode, y_train_episode = [], []
+
 
     # preprocess the observation, set input to network to be difference image
     cur_x = prepro(observation)
@@ -71,6 +71,7 @@ while True:
 
 
     if done:  # an episode finished
+        print(len(x_train_episode))
         episode_number += 1
         x_train_episode = np.array(x_train_episode).reshape(-1,D,D,1)
         y_train_episode *=  np.array(y_train_episode)*reward_sum
@@ -80,13 +81,12 @@ while True:
 
         x_train = x_train_episode if x_train is None else np.concatenate((x_train, x_train_episode),axis=0)
         y_train = y_train_episode if y_train is None else np.concatenate((y_train, y_train_episode),axis=0)
+        x_train_episode, y_train_episode = [], []
 
         # perform rmsprop parameter update every batch_size episodes
         if episode_number % batch_size == 0:
             model.fit(np.array(x_train),np.array(y_train),epochs=5, verbose=2)
-        if episode_number % batch_size*4 == 0:
-            x_train = None
-            y_train = None
+        
 
         # boring book-keeping
         running_reward = reward_sum if running_reward is None else running_reward * 0.99 + reward_sum * 0.01
