@@ -54,7 +54,7 @@ while True:
 
     # preprocess the observation, set input to network to be difference image
     cur_x = prepro(observation)
-    x = cur_x - prev_x if prev_x is not None else np.zeros(D)
+    x = cur_x - prev_x if prev_x is not None else np.zeros(1,D,D,1)
     prev_x = cur_x
 
     # forward the policy network and sample an action from the returned probability
