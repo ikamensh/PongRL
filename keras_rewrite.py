@@ -44,7 +44,7 @@ def prepro(I):
 observation = env.reset()
 prev_x = None  # used in computing the difference frame
 x_train, y_train= [], []
-x_train_episode, y_train_episode = [], []
+
 running_reward = None
 reward_sum = 0
 episode_number = 0
@@ -61,7 +61,7 @@ while True:
     up_prob = model.predict_proba(x.reshape(1,80,80,1), verbose=0)
     action = 2 if np.random.uniform() < up_prob else 3  # roll the dice!
     y = 1 if action == 2 else 0  # a "fake label"
-
+    x_train_episode, y_train_episode = [], []
     x_train_episode.append(x)
     y_train_episode.append(y)
 
