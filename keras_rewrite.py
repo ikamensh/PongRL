@@ -25,11 +25,9 @@ else:
     model = Sequential()
     model.add(Convolution2D(4, (3, 3), dilation_rate=(2, 2), input_shape=(D, D, 1)))
     model.add(MaxPool2D())
-    model.add(Convolution2D(4, (3, 3), dilation_rate=(2, 2)))
-    model.add(MaxPool2D())
     model.add(Flatten())
     model.add(Dense(1, activation='sigmoid'))
-    model.compile(adam(), binary_crossentropy)
+    model.compile(adam(lr=0.01), binary_crossentropy)
 
 
 def prepro(I):
@@ -93,7 +91,7 @@ while True:
 
         # perform rmsprop parameter update every batch_size episodes
         if episode_number % batch_size == 0:
-            model.fit(np.array(x_train),np.array(y_train),epochs=3, verbose=1)
+            model.fit(np.array(x_train),np.array(y_train),epochs=5, verbose=1)
             x_train, y_train= None, None
 
 
