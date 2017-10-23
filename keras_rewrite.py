@@ -27,7 +27,7 @@ else:
     model.add(MaxPool2D())
     model.add(Flatten())
     model.add(Dense(1, activation='sigmoid'))
-    model.compile(adam(lr=0.01), binary_crossentropy)
+    model.compile(adam(), binary_crossentropy)
 
 
 def prepro(I):
