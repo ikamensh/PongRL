@@ -106,8 +106,6 @@ while True:
                 f.write('| %d | %f | %f | %s' % (episode_number, reward_sum, running_reward, str(datetime.now())))
 
 
-        if episode_number % 100 == 0: pickle.dump(model, open('save.p', 'wb'))
-
         #prepare for new run of the simulation
         reward_sum = 0
         observation = env.reset()  # reset env
