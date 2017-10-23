@@ -9,7 +9,7 @@ from keras.losses import binary_crossentropy
 from datetime import datetime
 
 # hyperparameters
-batch_size = 3  # every how many episodes to do a param update?
+batch_size = 10  # every how many episodes to do a param update?
 resume = False  # resume from previous checkpoint?
 render = False
 
@@ -93,7 +93,8 @@ while True:
 
         # perform rmsprop parameter update every batch_size episodes
         if episode_number % batch_size == 0:
-            model.fit(np.array(x_train),np.array(y_train),epochs=5, verbose=2)
+            model.fit(np.array(x_train),np.array(y_train),epochs=3, verbose=1)
+            x_train, y_train= None, None
 
 
         # boring book-keeping
