@@ -75,7 +75,7 @@ while True:
     # step the environment and get new measurements
     observation, reward, done, info = env.step(action)
     reward_sum += reward
-
+    r_episode.append(reward)
 
     if done:  # an episode finished
         print(len(x_train_episode))
@@ -83,13 +83,9 @@ while True:
         x_train_episode = np.array(x_train_episode).reshape(-1,D,D,1)
         y_train_episode = np.array(y_train_episode)
 
-        actions_are_useful = reward_sum > 0
-
-        # if actions are useful, we train to take same action, so the history is the train_y
-        # otherwise we swap 1 and 0 in order to take opposite action
-        if not actions_are_useful:
-            y_train_episode -= 1 # 1 -> 0 ; 0 -> -1
-            y_train_episode[y_train_episode<0]=1 # 0 -> 0 ; -1 -> 1
+        temp = np.zeros_like(y_train_episode)
+        temp = 0.5
+        y_train_episode = temp + 0.5*y_train_episode*discount_rewards(np.array(r_episode))
 
         print("x_train_episode has shape of " + str(x_train_episode.shape))
         print("y_train_episode has shape of " + str(y_train_episode.shape))
