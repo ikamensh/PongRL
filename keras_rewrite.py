@@ -10,6 +10,7 @@ from datetime import datetime
 
 # hyperparameters
 batch_size = 10  # every how many episodes to do a param update?
+gamma=0.99
 resume = False  # resume from previous checkpoint?
 render = False
 
@@ -26,7 +27,7 @@ else:
     model.add(Flatten(input_shape=(D,D,1)))
     model.add(Dense(200, activation='relu'))
     model.add(Dense(1, activation='sigmoid'))
-    model.compile(adam(), binary_crossentropy)
+    model.compile(adam(lr=1e4), binary_crossentropy)
 
 
 def prepro(I):
@@ -38,6 +39,16 @@ def prepro(I):
     I[I != 0] = 1  # everything else (paddles, ball) just set to 1
     return I.astype(np.float).reshape(1,80,80,1)
 
+def discount_rewards(r):
+    """ take 1D float array of rewards and compute discounted reward """
+    discounted_r = np.zeros_like(r)
+    running_add = 0
+    for t in reversed(list(range(0, r.size))):
+        if r[t] != 0: running_add = 0  # reset the sum, since this was a game boundary (pong specific!)
+        running_add = running_add * gamma + r[t]
+        discounted_r[t] = running_add
+    return discounted_r
+
 observation = env.reset()
 prev_x = None  # used in computing the difference frame
 x_train, y_train= None, None
@@ -45,7 +56,7 @@ x_train, y_train= None, None
 running_reward = None
 reward_sum = 0
 episode_number = 0
-x_train_episode, y_train_episode = [], []
+x_train_episode, y_train_episode, r_episode = [], [], []
 while True:
     if render: env.render()
 
@@ -86,7 +97,7 @@ while True:
 
         x_train = x_train_episode if x_train is None else np.concatenate((x_train, x_train_episode),axis=0)
         y_train = y_train_episode if y_train is None else np.concatenate((y_train, y_train_episode),axis=0)
-        x_train_episode, y_train_episode = [], []
+        x_train_episode, y_train_episode, r_episode = [], [], []
 
         # perform rmsprop parameter update every batch_size episodes
         if episode_number % batch_size == 0:
