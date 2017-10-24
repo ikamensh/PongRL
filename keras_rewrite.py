@@ -23,9 +23,8 @@ if resume:
     model = pickle.load(open('save.p', 'rb'))
 else:
     model = Sequential()
-    model.add(Convolution2D(4, (3, 3), dilation_rate=(2, 2), input_shape=(D, D, 1)))
-    model.add(MaxPool2D())
-    model.add(Flatten())
+    model.add(Flatten(input_shape=(D,D,1)))
+    model.add(Dense(200, activation='relu'))
     model.add(Dense(1, activation='sigmoid'))
     model.compile(adam(), binary_crossentropy)
 

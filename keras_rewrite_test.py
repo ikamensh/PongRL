@@ -21,11 +21,8 @@ render = False
 D = 80  # input dimensionality: 80x80 grid
 
 model = Sequential()
-model.add(Convolution2D(4, (3, 3), dilation_rate=(2, 2),input_shape=(D,D,1)))
-model.add(MaxPool2D())
-model.add(Convolution2D(4, (3, 7), dilation_rate=(2, 2)))
-model.add(MaxPool2D())
-model.add(Flatten())
+model.add(Flatten(input_shape=(D,D,1)))
+model.add(Dense(200, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
 model.compile(RMSprop(), mean_squared_logarithmic_error)
 
