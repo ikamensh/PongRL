@@ -27,7 +27,7 @@ else:
     model.add(Flatten(input_shape=(D,D,1)))
     model.add(Dense(200, activation='relu'))
     model.add(Dense(1, activation='sigmoid'))
-    model.compile(adam(lr=1e4), binary_crossentropy)
+    model.compile(adam(lr=1e-4), binary_crossentropy)
 
 
 def prepro(I):
@@ -107,7 +107,7 @@ while True:
 
         # boring book-keeping
         running_reward = reward_sum if running_reward is None else running_reward * 0.99 + reward_sum * 0.01
-        print('resetting env. episode reward total was %f. running mean: %f' % (reward_sum, running_reward))
+        print('resetting env. episode reward total was %f. running mean: %f\n' % (reward_sum, running_reward))
 
         if episode_number%50==0:
             with open('learnlog_karpathy.log', 'a+') as f:

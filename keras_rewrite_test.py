@@ -4,7 +4,7 @@ import pickle
 import gym
 from keras.models import Sequential
 from keras.layers import Dense, Convolution2D, Flatten, MaxPool2D
-from keras.optimizers import RMSprop
+from keras.optimizers import adam
 from keras.losses import mean_squared_logarithmic_error
 from datetime import datetime
 
@@ -24,7 +24,7 @@ model = Sequential()
 model.add(Flatten(input_shape=(D,D,1)))
 model.add(Dense(200, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
-model.compile(RMSprop(), mean_squared_logarithmic_error)
+model.compile(adam(lr=1e-4), mean_squared_logarithmic_error)
 
 
 def prepro(I):
