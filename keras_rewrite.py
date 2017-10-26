@@ -2,11 +2,15 @@
 import numpy as np
 import pickle
 import gym
+from keras.callbacks import TensorBoard
 from keras.models import Sequential
 from keras.layers import Dense, Convolution2D, Flatten, MaxPool2D
 from keras.optimizers import adam
 from keras.losses import binary_crossentropy
 from datetime import datetime
+
+callback = TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=32, write_graph=True, write_grads=True,
+             write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
 
 # hyperparameters
 batch_size = 10  # every how many episodes to do a param update?
@@ -97,7 +101,7 @@ while True:
 
         # perform rmsprop parameter update every batch_size episodes
         if episode_number % batch_size == 0:
-            model.fit(np.array(x_train),np.array(y_train),epochs=5, verbose=1)
+            model.fit(np.array(x_train),np.array(y_train),epochs=5, verbose=1, callbacks=[callback])
             x_train, y_train= None, None
 
 
