@@ -8,9 +8,11 @@ from keras.layers import Dense, Convolution2D, Flatten, MaxPool2D
 from keras.optimizers import adam
 from keras.losses import binary_crossentropy
 from datetime import datetime
+from time import time
 
-callback = TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=32, write_graph=True, write_grads=True,
-             write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
+
+callback = TensorBoard(log_dir="logs/{}".format(time()), histogram_freq=4, batch_size=128, write_graph=True,
+                       write_grads=True)
 
 # hyperparameters
 batch_size = 10  # every how many episodes to do a param update?
