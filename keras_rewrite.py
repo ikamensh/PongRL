@@ -31,7 +31,7 @@ else:
     model.add(Flatten(input_shape=(D,D,1)))
     model.add(Dense(200, activation='relu'))
     model.add(Dense(1, activation='sigmoid'))
-    model.compile(adam(lr=1e-4), binary_crossentropy)
+    model.compile(adam(lr=1e-5), binary_crossentropy)
 
 
 def prepro(I):
@@ -101,7 +101,7 @@ while True:
 
         # perform rmsprop parameter update every batch_size episodes
         if episode_number % batch_size == 0:
-            model.fit(np.array(x_train),np.array(y_train),epochs=5, verbose=1, callbacks=[callback])
+            model.fit(np.array(x_train),np.array(y_train),epochs=3, verbose=1, callbacks=[callback])
             x_train, y_train= None, None
 
 
