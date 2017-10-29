@@ -11,7 +11,7 @@ from datetime import datetime
 from time import time
 
 
-callback = TensorBoard(log_dir="logs/{}".format(time()), histogram_freq=4, batch_size=128, write_graph=True,
+callback = TensorBoard(log_dir="logs/{}".format(time()), histogram_freq=20, batch_size=128, write_graph=True,
                        write_grads=True)
 
 # hyperparameters
@@ -103,7 +103,12 @@ while True:
 
         # perform rmsprop parameter update every batch_size episodes
         if episode_number % batch_size == 0:
-            model.fit(np.array(x_train),np.array(y_train),epochs=3, verbose=1, callbacks=[callback])
+            model.fit(x_train,y_train,
+                      epochs=2,
+                      verbose=1,
+                      callbacks=[callback],
+                      validation_data = (x_train, y_train)
+            )
             x_train, y_train= None, None
 
 
