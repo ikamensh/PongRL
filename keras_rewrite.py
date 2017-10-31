@@ -91,6 +91,7 @@ while True:
 
         temp = np.zeros_like(y_train_episode)
         temp = 0.5
+        #TODO y_train_episode = 0 has no effect..
         y_train_episode = temp + 0.5*y_train_episode*discount_rewards(np.array(r_episode))
 
         print("x_train_episode has shape of " + str(x_train_episode.shape))
