@@ -3,6 +3,7 @@ import numpy as np
 from exp_buffer import Experience
 
 env = gym.make("Pong-v0")
+action_space_size = len(env.action_space)
 #env = My_Atari_Mock()
 
 
