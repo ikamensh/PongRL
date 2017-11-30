@@ -1,6 +1,6 @@
 import tensorflow as tf
 from dqn.model import define_model
-from dqn.play import rollout, experiences_buffer
+from dqn.play import rollout
 
 state_size = [None, 80, 80, 4]
 single_image_shape=[1, 80, 80, 4]
@@ -58,9 +58,8 @@ def timestamp(i):
     print("{} done in {} sec".format(i, dt))
 
 t = time()
-for i in range(500):
-    rollout(action_choice, inp, sess)
-timestamp("500 rollouts")
+
+# timestamp("500 rollouts")
 
 #Experience exp:    def __init__(self,s1, a, r, s2)
 import random
@@ -82,21 +81,33 @@ def stack_batch(sample):
 
 
 
-
-b_s1, b_a, b_r, b_s2 = stack_batch(random.sample(experiences_buffer, 8))
-# print(str(inp) + " - " + str(exp.s1))
-# print(str(action) + " - " + str(exp.a))
-# print(str(reward) + " - " + str(exp.r))
-# print(str(inp_frozen) + " - " + str(exp.s2))
-sess.run(training_step, feed_dict={inp: b_s1, action: b_a, reward: b_r, inp_frozen: b_s2})
-timestamp("single update")
-
-for i in range(10):
-    b_s1, b_a, b_r, b_s2 = stack_batch(random.sample(experiences_buffer, 8))
-    # print(str(inp) + " - " + str(exp.s1))
-    # print(str(action) + " - " + str(exp.a))
-    # print(str(reward) + " - " + str(exp.r))
-    # print(str(inp_frozen) + " - " + str(exp.s2))
+def train_on_batch_of_size( size , exp_buff ):
+    b_s1, b_a, b_r, b_s2 = stack_batch(random.sample(exp_buff, size))
     sess.run(training_step, feed_dict={inp: b_s1, action: b_a, reward: b_r, inp_frozen: b_s2})
 
-timestamp("10 more updates")
+from matplotlib import pyplot as plt
+
+def training_loop():
+
+    rewards_progression = [0]
+
+    for step in range(int(1e5)):
+        exp_buff=[]
+        rewards = 0
+        for i in range(500):
+            exps, r = rollout(action_choice, inp, sess)
+            exp_buff.extend(exps)
+            rewards += r
+            rewards_progression.append( rewards / 500 )
+
+        for i in range(100):
+            train_on_batch_of_size(8, exp_buff)
+
+        if step%50 == 0:
+            timestamp(step)
+            plt.clf()
+            plt.plot(np.array(rewards_progression))
+            plt.savefig("progress.png".format(step))
+
+training_loop()
+

@@ -3,10 +3,9 @@ import gym
 from dqn.exp_buffer import Experience
 from dqn.Atari_mock import My_Atari_Mock
 
-#env = gym.make("Pong-v0")
-env = My_Atari_Mock()
+env = gym.make("Pong-v0")
+#env = My_Atari_Mock()
 
-experiences_buffer = []
 
 def shrink(pic):
     #print("shrinking pic with shape: " + str(pic.shape))
@@ -28,8 +27,10 @@ def init_stack(downsampled):
 
 
 def rollout(action_choice_op, inp_placeholder, sess):
+    experiences_buffer = []
     observation1 = init_stack(shrink(env.reset()))
     done = False
+    r_episode = 0
     while done is False:
         action_chosen = sess.run(action_choice_op, feed_dict={inp_placeholder: observation1})
 
@@ -40,9 +41,13 @@ def rollout(action_choice_op, inp_placeholder, sess):
             obs, r, done, _ = env.step(action_chosen)
             total_r += r
             four_obs.append(shrink(obs))
+
         observation2 = np.concatenate(four_obs, axis=3)
         experiences_buffer.append(Experience(observation1, action_chosen, np.array([total_r]), observation2))
         observation1 = observation2
+        r_episode += total_r
+
+    return experiences_buffer, total_r
 
 
 #sess.run(tf.global_variables_initializer())
