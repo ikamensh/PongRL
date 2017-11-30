@@ -1,7 +1,6 @@
-import numpy as np
 import gym
-from dqn.exp_buffer import Experience
-from dqn.Atari_mock import My_Atari_Mock
+import numpy as np
+from exp_buffer import Experience
 
 env = gym.make("Pong-v0")
 #env = My_Atari_Mock()

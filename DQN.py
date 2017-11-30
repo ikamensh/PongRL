@@ -1,6 +1,7 @@
 import tensorflow as tf
-from dqn.model import define_model
-from dqn.play import rollout
+from model import define_model
+
+from play import rollout
 
 state_size = [None, 80, 80, 4]
 single_image_shape=[1, 80, 80, 4]
