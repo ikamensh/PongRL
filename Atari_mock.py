@@ -12,4 +12,4 @@ class My_Atari_Mock:
 
     def step(self, action):
         self.countdown -=1
-        return np.ones(shape=[210, 160, 3], dtype=np.float32), 0, self.countdown > 0, None
+        return np.ones(shape=[210, 160, 3], dtype=np.float32), 0.2, self.countdown <= 0, None

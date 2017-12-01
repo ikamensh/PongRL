@@ -22,6 +22,7 @@ with tf.name_scope("active_model"):
     inp = tf.placeholder(dtype=tf.float32, shape = state_size)
     model = define_model(inp)
     action_choice = tf.reshape(tf.multinomial(model.output, num_samples=1), shape=[1])
+    #greedy_action = tf.reduce_max(model.output) TODO get index, not Q value
 
 with tf.name_scope("frozen_model"):
     inp_frozen = tf.placeholder(dtype=tf.float32, shape = state_size)
@@ -40,6 +41,7 @@ def loss(a, r):
 
         target = r + disc_rate*tf.reduce_max(frozen_model.output) # frozen_input is to be s2
         loss_abs_error = tf.reduce_mean(abs(pred_q - target),axis=0)
+        tf.summary.scalar("loss", loss_abs_error)
 
         return loss_abs_error
 
@@ -53,18 +55,21 @@ training_step = optimizer.minimize(mae_loss)
 
 
 writer = tf.summary.FileWriter('./my_graph', sess.graph)
-writer.close()
+all_summaries = tf.summary.merge_all()
 
 sess.run(tf.global_variables_initializer())
 
-def train_on_batch_of_size( size , exp_buff ):
+def train_on_batch_of_size( size , exp_buff, make_summary):
 
     b_s1, b_a, b_r, b_s2 = stack_batch(random.sample(exp_buff, size))
-    sess.run(training_step, feed_dict={inp: b_s1, action: b_a, reward: b_r, inp_frozen: b_s2})
+    if make_summary:
+        summaries, _ = sess.run([all_summaries, training_step], feed_dict={inp: b_s1, action: b_a, reward: b_r, inp_frozen: b_s2})
+        return summaries
+    else:
+        sess.run( training_step, feed_dict={inp: b_s1, action: b_a, reward: b_r, inp_frozen: b_s2})
 
 def training_loop():
 
-    rewards_progression = [0]
     exp_buff = deque(maxlen=3000)
     for step in range(int(1e5)):
 
@@ -73,23 +78,29 @@ def training_loop():
             exps, r = rollout(action_choice, inp, sess)
             exp_buff.extend(exps)
             rewards += r
-            rewards_progression.append( rewards / 500 )
 
-        for i in range(100):
-            train_on_batch_of_size(8, exp_buff)
+        summary = tf.Summary()
+        summary.value.add(tag='training reward', simple_value=rewards / 3)
+        writer.add_summary(summary, step)
 
+
+        for i in range(99):
+            train_on_batch_of_size(8, exp_buff, False)
+        summary = train_on_batch_of_size(8, exp_buff, True)
+        writer.add_summary(summary, step)
 
         w = model.get_weights()
         frozen_model.set_weights(w)
 
         if step%10 == 0:
             timestamp(step)
-            plt.clf()
-            plt.plot(np.array(rewards_progression))
-            plt.savefig("progress.png".format(step))
-            
+            writer.flush()
+
+
         if step % 20 == 0:
             model.save_weights("weights{}.h5".format(step//1000), overwrite=True)
 
 training_loop()
+writer.close()
+
 
