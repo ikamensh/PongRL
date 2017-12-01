@@ -30,7 +30,7 @@ def init_stack(downsampled):
 
 def rollout(action_choice_op, inp_placeholder, sess):
     experiences_buffer = []
-    print("env_reset")
+    # print("env_reset")
     observation1 = init_stack(shrink(env.reset()))
     done = False
     r_episode = 0

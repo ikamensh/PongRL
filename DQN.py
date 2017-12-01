@@ -4,6 +4,7 @@ from model import define_model
 from play import rollout
 from train import timestamp, stack_batch
 import random
+from collections import deque
 
 import numpy as np
 import matplotlib
@@ -64,11 +65,11 @@ def train_on_batch_of_size( size , exp_buff ):
 def training_loop():
 
     rewards_progression = [0]
-
+    exp_buff = deque(maxlen=3000)
     for step in range(int(1e5)):
-        exp_buff=[]
+
         rewards = 0
-        for i in range(25):
+        for i in range(3):
             exps, r = rollout(action_choice, inp, sess)
             exp_buff.extend(exps)
             rewards += r
