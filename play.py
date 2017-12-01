@@ -30,6 +30,7 @@ def init_stack(downsampled):
 
 def rollout(action_choice_op, inp_placeholder, sess):
     experiences_buffer = []
+    print("env_reset")
     observation1 = init_stack(shrink(env.reset()))
     done = False
     r_episode = 0
@@ -39,7 +40,7 @@ def rollout(action_choice_op, inp_placeholder, sess):
         total_r = 0.
         four_obs = []
         for i in range(4):
-            #print(action_chosen)
+            print("env_step with action= {}".format(action_chosen))
             obs, r, done, _ = env.step(action_chosen)
             total_r += r
             four_obs.append(shrink(obs))
