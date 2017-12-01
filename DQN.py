@@ -104,6 +104,10 @@ def training_loop():
         for i in range(100):
             train_on_batch_of_size(8, exp_buff)
 
+        if step % 5 == 0:
+            w = model.get_weights()
+            frozen_model.set_weights(w)
+
         if step%50 == 0:
             timestamp(step)
             plt.clf()

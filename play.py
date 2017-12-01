@@ -1,10 +1,12 @@
 import gym
 import numpy as np
 from exp_buffer import Experience
+from Atari_mock import My_Atari_Mock
 
-env = gym.make("Pong-v0")
+env = My_Atari_Mock()
+#env = gym.make("Pong-v0")
 action_space_size = 6
-#env = My_Atari_Mock()
+
 
 
 def shrink(pic):
