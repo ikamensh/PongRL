@@ -78,16 +78,17 @@ def training_loop():
         for i in range(100):
             train_on_batch_of_size(8, exp_buff)
 
-        if step % 5 == 0:
-            w = model.get_weights()
-            frozen_model.set_weights(w)
+
+        w = model.get_weights()
+        frozen_model.set_weights(w)
 
         if step%10 == 0:
             timestamp(step)
             plt.clf()
             plt.plot(np.array(rewards_progression))
             plt.savefig("progress.png".format(step))
-        if step % 5 == 0:
+            
+        if step % 20 == 0:
             model.save_weights("weights{}.h5".format(step//1000), overwrite=True)
 
 training_loop()
