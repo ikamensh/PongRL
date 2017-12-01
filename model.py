@@ -1,4 +1,4 @@
-from keras import Input
+from keras.layers import Input
 from keras.activations import relu
 from keras.engine import Model
 from keras.layers import Convolution2D, Dense, Flatten

@@ -86,6 +86,8 @@ def training_loop():
             plt.clf()
             plt.plot(np.array(rewards_progression))
             plt.savefig("progress.png".format(step))
+        if step % 5 == 0:
+            model.save_weights("weights{}.h5".format(step//1000), overwrite=True)
 
 training_loop()
 

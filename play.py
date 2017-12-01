@@ -3,7 +3,7 @@ import numpy as np
 from exp_buffer import Experience
 from Atari_mock import My_Atari_Mock
 
-#env = My_Atari_Mock()
+# env = My_Atari_Mock()
 env = gym.make("Pong-v0")
 action_space_size = 6
 
@@ -43,6 +43,8 @@ def rollout(action_choice_op, inp_placeholder, sess):
             obs, r, done, _ = env.step(action_chosen)
             total_r += r
             four_obs.append(shrink(obs))
+            if done:
+                break
 
         observation2 = np.concatenate(four_obs, axis=3)
         experiences_buffer.append(Experience(observation1, action_chosen, np.array([total_r]), observation2))
