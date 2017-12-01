@@ -3,7 +3,7 @@ import tensorflow as tf
 from model import define_model
 from play import rollout
 from train import timestamp, stack_batch
-from random import random
+import random
 
 import numpy as np
 import matplotlib
@@ -57,6 +57,7 @@ writer.close()
 sess.run(tf.global_variables_initializer())
 
 def train_on_batch_of_size( size , exp_buff ):
+
     b_s1, b_a, b_r, b_s2 = stack_batch(random.sample(exp_buff, size))
     sess.run(training_step, feed_dict={inp: b_s1, action: b_a, reward: b_r, inp_frozen: b_s2})
 
@@ -80,7 +81,7 @@ def training_loop():
             w = model.get_weights()
             frozen_model.set_weights(w)
 
-        if step%50 == 0:
+        if step%10 == 0:
             timestamp(step)
             plt.clf()
             plt.plot(np.array(rewards_progression))
