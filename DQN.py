@@ -1,7 +1,14 @@
 import tensorflow as tf
-from model import define_model
 
+from model import define_model
 from play import rollout
+from train import timestamp, train_on_batch_of_size
+
+import numpy as np
+import matplotlib
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
+from matplotlib import pyplot as plt
 
 state_size = [None, 80, 80, 4]
 single_image_shape=[1, 80, 80, 4]
@@ -48,48 +55,6 @@ writer.close()
 
 sess.run(tf.global_variables_initializer())
 
-from time import time
-t = time()
-
-
-def timestamp(i):
-    global t
-    dt = time() - t
-    t = time()
-    print("{} done in {} sec".format(i, dt))
-
-t = time()
-
-# timestamp("500 rollouts")
-
-#Experience exp:    def __init__(self,s1, a, r, s2)
-import random
-import numpy as np
-
-
-
-def stack_batch(sample):
-    s1_stack, a_stack, r_stack, s2_stack = [],[],[],[]
-    for exp in sample:
-        s1_stack.append(exp.s1)
-        a_stack.append(exp.a)
-        r_stack.append(exp.r)
-        s2_stack.append(exp.s2)
-    return np.vstack(s1_stack), \
-           np.reshape(np.vstack(a_stack), newshape=[-1]), \
-           np.reshape(np.vstack(r_stack),newshape=[-1]), \
-           np.vstack(s2_stack)
-
-
-
-def train_on_batch_of_size( size , exp_buff ):
-    b_s1, b_a, b_r, b_s2 = stack_batch(random.sample(exp_buff, size))
-    sess.run(training_step, feed_dict={inp: b_s1, action: b_a, reward: b_r, inp_frozen: b_s2})
-
-import matplotlib
-# Force matplotlib to not use any Xwindows backend.
-matplotlib.use('Agg')
-from matplotlib import pyplot as plt
 
 def training_loop():
 
