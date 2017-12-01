@@ -44,8 +44,8 @@ def rollout(action_choice_op, inp_placeholder, sess):
             obs, r, done, _ = env.step(action_chosen)
             total_r += r
             four_obs.append(shrink(obs))
-            if done:
-                break
+            # if done:
+            #     break
 
         observation2 = np.concatenate(four_obs, axis=3)
         experiences_buffer.append(Experience(observation1, action_chosen, np.array([total_r]), observation2))
