@@ -20,10 +20,10 @@ def stack_batch(sample):
         s2_stack.append(exp.s2)
 
 
-    print(s.shape for s in s1_stack)
+    print([s.shape for s in s1_stack])
     print(a_stack)
     print(r_stack)
-    print(s.shape for s in s2_stack)
+    print([s.shape for s in s2_stack])
 
     return np.vstack(s1_stack), \
            np.reshape(np.vstack(a_stack), newshape=[-1]), \
