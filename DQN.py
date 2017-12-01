@@ -68,7 +68,7 @@ def training_loop():
     for step in range(int(1e5)):
         exp_buff=[]
         rewards = 0
-        for i in range(500):
+        for i in range(25):
             exps, r = rollout(action_choice, inp, sess)
             exp_buff.extend(exps)
             rewards += r
