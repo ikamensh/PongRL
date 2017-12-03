@@ -2,6 +2,7 @@ import gym
 import numpy as np
 from exp_buffer import Experience
 from Atari_mock import My_Atari_Mock
+from random import random
 
 #env = My_Atari_Mock()
 env = gym.make("Pong-v0")
@@ -28,14 +29,17 @@ def init_stack(downsampled):
     return copied
 
 
-def rollout(action_choice_op, inp_placeholder, sess):
+def rollout(action_choice_op = None, inp_placeholder = None, sess = None, isRandom = True):
     experiences_buffer = []
     # print("env_reset")
     observation1 = init_stack(shrink(env.reset()))
     done = False
     r_episode = 0
     while done is False:
-        action_chosen = sess.run(action_choice_op, feed_dict={inp_placeholder: observation1})
+        if isRandom:
+            action_chosen = random.choice(env.action_space)
+        else:
+            action_chosen = sess.run(action_choice_op, feed_dict={inp_placeholder: observation1})
 
         total_r = 0.
         four_obs = []
