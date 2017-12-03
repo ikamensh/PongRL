@@ -37,7 +37,7 @@ def rollout(action_choice_op = None, inp_placeholder = None, sess = None, isRand
     r_episode = 0
     while done is False:
         if isRandom:
-            action_chosen = random.choice(env.action_space)
+            action_chosen = env.action_space.sample()
         else:
             action_chosen = sess.run(action_choice_op, feed_dict={inp_placeholder: observation1})
 
