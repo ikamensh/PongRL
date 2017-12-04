@@ -6,9 +6,9 @@ Environment: gym atari Pong
 Network: 3 layer Convolutional + 1 hidden Dense layer.
 
 Requirements: tensorflow 1.4, keras 2; 
-to start training run 
+to start training run \n
   python DQN.py
-to monitor training, connect tensorboard :
+to monitor training, connect tensorboard :\n
   tensorboard logdir=my_graph
 
 Overview (Tensorboard) : 
