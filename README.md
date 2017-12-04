@@ -8,10 +8,16 @@ Network: 3 layer Convolutional + 1 hidden Dense layer.
 Requirements: tensorflow 1.4, keras 2
 
 to start training run
-    $ python DQN.py
+    ```
+    python DQN.py
+    ```
+    
     
 to monitor training, connect tensorboard :
-    $ tensorboard logdir=my_graph
+    ```
+    tensorboard logdir=my_graph
+    ```
+    
 
 Overview (Tensorboard) : 
 
