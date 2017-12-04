@@ -5,4 +5,10 @@ Environment: gym atari Pong
 
 Network: 3 layer Convolutional + 1 hidden Dense layer.
 
-Overview (Tensorboard) : ![Alt text](/2017-12-04_10h11_49.png?raw=true "Overview of the training")
+Overview (Tensorboard) : 
+
+![Alt text](/screenshots/2017-12-04_10h11_21.png?raw=true "Overview of the training")
+
+Model:
+
+![Alt text](/screenshots/2017-12-04_10h15_37.png?raw=true "trained model")
